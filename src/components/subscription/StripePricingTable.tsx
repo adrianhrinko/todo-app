@@ -6,8 +6,13 @@ import React, { useEffect, useRef, useState } from "react";
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      "stripe-pricing-table": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
+      'stripe-pricing-table': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          'pricing-table-id': string;
+          'publishable-key': string;
+          'client-reference-id': string;
+          'customer-session-client-secret': string;
+        },
         HTMLElement
       >;
     }
@@ -68,11 +73,17 @@ const StripePricingTable: React.FC<StripePricingTableProps> = ({
 
   return (
     <div className="w-full">
-      <stripe-pricing-table
-        pricing-table-id={pricingTableId}
-        publishable-key={publishableKey}
-        client-reference-id={currentUser?.uid ?? ""}
-        customer-session-client-secret={customerSessionClientSecret}
+      <div
+        dangerouslySetInnerHTML={{
+          __html: `
+            <stripe-pricing-table
+              pricing-table-id="${pricingTableId}"
+              publishable-key="${publishableKey}"
+              client-reference-id="${currentUser?.uid ?? ""}"
+              customer-session-client-secret="${customerSessionClientSecret}"
+            ></stripe-pricing-table>
+          `
+        }}
       />
     </div>
   );

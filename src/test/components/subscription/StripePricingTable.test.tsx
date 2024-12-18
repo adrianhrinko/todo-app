@@ -2,6 +2,7 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import StripePricingTable from "@/components/subscription/StripePricingTable";
 import { useAuth } from "@/lib/context/AuthContext";
+import '@testing-library/jest-dom';
 
 jest.mock("../../../lib/context/AuthContext", () => ({
   useAuth: jest.fn(),

@@ -4,6 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import SubscriptionCardContainer from "./SubscriptionCardContainer";
 import { StripeProductData } from "@/lib/stripe/types/StripeProductData";
 import { useSubscriptionModal } from "@/lib/context/SubscriptionModalContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export default function SubscriptionModal({
   products,
@@ -43,29 +52,26 @@ export default function SubscriptionModal({
 
   return (
     <>
-      <dialog
-        ref={modalRef}
-        id="my_modal_5"
-        className="modal modal-bottom sm:modal-middle"
+      <Dialog
+        open={showSubscriptionModal}
+        onOpenChange={(open) => setShowSubscriptionModal(open)}
       >
-        <div className="modal-box sm:w-full sm:max-w-5xl">
-          <h3 className="font-bold text-center text-2xl">Upgrade Now</h3>
+        <DialogContent className="sm:max-w-5xl">
+          <DialogHeader>
+            <DialogTitle className="text-center">Upgrade Now</DialogTitle>
+          </DialogHeader>
+          
           <SubscriptionCardContainer products={products} />
-          <div className="modal-action">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button
-                onClick={() => {
-                  setShowSubscriptionModal(false);
-                }}
-                className="btn"
-              >
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" onClick={() => setShowSubscriptionModal(false)}>
                 Close
-              </button>
-            </form>
-          </div>
-        </div>
-      </dialog>
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -5,6 +5,9 @@ import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export default function PasswordResetForm() {
   const [newPassword, setNewPassword] = useState("");
@@ -32,22 +35,23 @@ export default function PasswordResetForm() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="w-full max-w-md p-8 space-y-3 rounded-xl bg-white shadow-lg">
-        <h1 className="text-xl font-bold text-center">Reset your password</h1>
-        <input
-          type="password"
-          className="input input-bordered w-full"
-          placeholder="New Password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <button
-          onClick={handlePasswordReset}
-          className="btn btn-primary w-full"
-        >
-          Reset Password
-        </button>
-      </div>
+      <Card className="w-full max-w-md">
+        <CardContent className="space-y-4 pt-6">
+          <h1 className="text-xl font-bold text-center">Reset your password</h1>
+          <Input
+            type="password"
+            placeholder="New Password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <Button
+            onClick={handlePasswordReset}
+            className="w-full"
+          >
+            Reset Password
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

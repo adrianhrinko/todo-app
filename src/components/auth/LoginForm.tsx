@@ -9,6 +9,11 @@ import { auth } from "@/lib/firebase/firebaseClient";
 import { useRouter } from "next/navigation";
 import { signIn, SignInMethod } from "@/lib/firebase/signin";
 import signUp from "@/lib/firebase/signup";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 enum FormMode {
   Login,
@@ -115,106 +120,105 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="flex flex-col w-full items-center justify-start pt-20 h-screen">
-      <div className="card w-full max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl bg-base-300 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title">
+    <div className="flex flex-col items-center justify-start pt-20">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>
             {formMode === FormMode.Login ? "Login" : "Register"}
-          </h2>
-          {error && <div className="text-error">{error}</div>}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Email</span>
-            </label>
-            <input
-              type="email"
-              placeholder="Email"
-              className="input input-bordered"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Password</span>
-            </label>
-            <input
-              type="password"
-              placeholder="Password"
-              className="input input-bordered"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {formMode === FormMode.Register && (
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Confirm Password</span>
-              </label>
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                className="input input-bordered"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+          </CardTitle>
+          {error && <p className="text-destructive">{error}</p>}
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-          )}
-          {formMode === FormMode.Login && (
-            <label className="label">
-              <a
-                href="#"
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            {formMode === FormMode.Register && (
+              <div>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            )}
+            {formMode === FormMode.Login && (
+              <Button
+                variant="link"
+                className="px-0"
                 onClick={handleForgotPassword}
-                className="label-text-alt link link-hover"
               >
                 Forgot password?
-              </a>
-            </label>
-          )}
-          <div className="form-control mt-6">
-            {formMode === FormMode.Login ? (
-              <button
-                disabled={!email || !password || error !== null}
-                onClick={handleLogin}
-                className="btn btn-primary"
-              >
-                Login
-              </button>
-            ) : (
-              <button
-                disabled={!email || !password || !confirmPassword}
-                onClick={handleRegister}
-                className="btn btn-primary"
-              >
-                Register
-              </button>
+              </Button>
             )}
           </div>
-          <div className="divider">OR</div>
-          <div className="form-control">
-            <button className="btn btn-outline" onClick={handleGoogleAuth}>
-              <FontAwesomeIcon icon={faGoogle} className="text-lg mr-2" /> Sign
-              in with Google
-            </button>
-          </div>
-          <div className="form-control mt-2">
-            <button
-              className="btn btn-outline btn-neutral"
-              onClick={() =>
-                setFormMode(
-                  formMode === FormMode.Login
-                    ? FormMode.Register
-                    : FormMode.Login
-                )
-              }
+
+          {formMode === FormMode.Login ? (
+            <Button
+              disabled={!email || !password || error !== null}
+              onClick={handleLogin}
+              className="w-full"
             >
-              {formMode === FormMode.Login
-                ? "Need an account? Register"
-                : "Have an account? Login"}
-            </button>
-          </div>
-        </div>
-      </div>
+              Login
+            </Button>
+          ) : (
+            <Button
+              disabled={!email || !password || !confirmPassword}
+              onClick={handleRegister}
+              className="w-full"
+            >
+              Register
+            </Button>
+          )}
+
+          <Separator />
+
+          <Button
+            variant="outline"
+            onClick={handleGoogleAuth}
+            className="w-full"
+          >
+            <FontAwesomeIcon icon={faGoogle} className="mr-2 h-4 w-4" />
+            Sign in with Google
+          </Button>
+
+          <Button
+            variant="ghost"
+            onClick={() =>
+              setFormMode(
+                formMode === FormMode.Login
+                  ? FormMode.Register
+                  : FormMode.Login
+              )
+            }
+            className="w-full"
+          >
+            {formMode === FormMode.Login
+              ? "Need an account? Register"
+              : "Have an account? Login"}
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -13,13 +13,12 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }>}
+) {
+  const { slug } = await params;
   const postsDirectory = path.join(process.cwd(), "src/posts");
-  const fullPath = path.join(postsDirectory, `${params.slug}.mdx`);
+  const fullPath = path.join(postsDirectory, `${slug}.mdx`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data } = matter(fileContents);
 
@@ -30,9 +29,10 @@ export async function generateMetadata({
   };
 }
 
-export default function BlogPost({ params }: { params: { slug: string } }) {
+export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const postsDirectory = path.join(process.cwd(), "src/posts");
-  const fullPath = path.join(postsDirectory, `${params.slug}.mdx`);
+  const fullPath = path.join(postsDirectory, `${slug}.mdx`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { content, data } = matter(fileContents);
   const frontMatter = {

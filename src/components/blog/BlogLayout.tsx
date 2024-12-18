@@ -21,18 +21,18 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ children, frontMatter }) => {
             alt={frontMatter.title}
             fill
             sizes="100vw"
-            className="object-cover"
+            className="object-cover rounded-lg"
             priority
           />
         </div>
-        <article className="prose lg:prose-xl mx-auto mb-12">
-          <h1 className="text-center font-bold text-4xl">
+        <article className="space-y-6 mb-12">
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-center">
             {frontMatter.title}
           </h1>
-          <p className="text-lg font-semibold text-center">
+          <p className="text-lg font-semibold leading-7 text-center">
             {frontMatter.description}
           </p>
-          <p className="text-sm text-gray-500 text-center">
+          <p className="text-sm text-muted-foreground text-center">
             {frontMatter.date}
           </p>
 

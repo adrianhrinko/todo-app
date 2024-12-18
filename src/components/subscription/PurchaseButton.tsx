@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
 /**
  * Props for the PurchaseButton component.
@@ -108,16 +109,16 @@ export default function PurchaseButton({
   const isDisabled = userClaims?.role === "premium" || loading;
 
   return (
-    <button
+    <Button
       disabled={isDisabled}
       onClick={onClickBuy}
-      className={`btn ${popular ? "btn-primary" : "btn-secondary"}`}
+      variant={popular ? "default" : "secondary"}
     >
       {loading ? (
-        <span className="loading loading-spinner loading-xs"></span>
+        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       ) : (
         buttonText
       )}
-    </button>
+    </Button>
   );
 }

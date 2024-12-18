@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const uid = cookieStore.get("uid")?.value;
   if (!uid)
     return NextResponse.json({ error: "User not found" }, { status: 404 });

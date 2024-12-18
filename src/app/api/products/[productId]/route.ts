@@ -5,10 +5,10 @@ const admin = initializeAdmin();
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
-    const { productId } = params;
+    const { productId } = await params;
 
     const productDoc = await admin
       .firestore()

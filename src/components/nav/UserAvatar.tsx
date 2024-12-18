@@ -23,42 +23,42 @@ export default function UserAvatar() {
   }
 
   return (
-    <div className="dropdown dropdown-end">
-      <div
-        tabIndex={0}
-        role="button"
-        className="btn btn-ghost btn-circle avatar placeholder"
+    <div className="relative">
+      <button
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground"
+        aria-haspopup="true"
       >
-        <div className="bg-neutral text-neutral-content w-10 rounded-full">
-          {currentUser.displayName && <span>{currentUser.displayName[0]}</span>}
-        </div>
-      </div>
-      <ul
-        tabIndex={0}
-        className="mt-3 z-[100] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
-      >
-        <li className="mb-4">
+        {currentUser.displayName && <span>{currentUser.displayName[0]}</span>}
+      </button>
+      <div className="absolute right-0 mt-2 w-52 rounded-md border bg-popover p-2 shadow-lg">
+        <div className="mb-4">
           <SubscriptionModalReminder />
-        </li>
-        <li>
-          <Link href="/app/dashboard">Dashboard</Link>
-        </li>
-        <li>
-          <Link href="/app/settings">Settings</Link>
-        </li>
-
-        <li>
+        </div>
+        <nav className="flex flex-col space-y-1">
+          <Link 
+            href="/app/dashboard"
+            className="rounded-sm px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+          >
+            Dashboard
+          </Link>
+          <Link
+            href="/app/settings" 
+            className="rounded-sm px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+          >
+            Settings
+          </Link>
           <button
             onClick={() =>
               signout(async () => {
                 router.push("/login");
               })
             }
+            className="text-left rounded-sm px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
           >
             Logout
           </button>
-        </li>
-      </ul>
+        </nav>
+      </div>
     </div>
   );
 }

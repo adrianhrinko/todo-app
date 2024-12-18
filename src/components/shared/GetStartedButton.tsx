@@ -3,6 +3,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire } from "@fortawesome/free-solid-svg-icons";
 import mixpanel from "mixpanel-browser";
+import { Button } from "../ui/button";
 
 export default function GetStartedButton() {
   const handleButtonClick = () => {
@@ -11,9 +12,9 @@ export default function GetStartedButton() {
   };
 
   return (
-    <button onClick={handleButtonClick} className="btn btn-secondary">
+    <Button onClick={handleButtonClick} variant="secondary" className="gap-2">
       <FontAwesomeIcon icon={faFire} color="red" size="lg" />
       <span>Start Using FireSaaS for Free</span>
-    </button>
+    </Button>
   );
 }

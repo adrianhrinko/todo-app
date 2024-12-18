@@ -13,12 +13,17 @@ import admin = require("firebase-admin");
 
 admin.initializeApp();
 
-export const initializeNewUser = functions.auth.user().onCreate((user) => {
-  logger.info("New user created", user);
+const regionalFunctions = functions.region("europe-central2");
 
-  admin.firestore().collection("users").doc(user.uid).set({
-    email: user.email,
-    name: user.displayName,
-    photoURL: user.photoURL,
+export const initializeNewUser = regionalFunctions
+  .auth
+  .user()
+  .onCreate((user) => {
+    logger.info("New user created", user);
+
+    admin.firestore().collection("users").doc(user.uid).set({
+      email: user.email,
+      name: user.displayName,
+      photoURL: user.photoURL,
+    });
   });
-});

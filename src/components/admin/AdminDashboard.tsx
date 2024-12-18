@@ -16,6 +16,8 @@ import Section from "../shared/Section";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
+import { Card, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
 
 interface DashboardData {
   totalCustomers: number;
@@ -158,46 +160,58 @@ export default function AdminDashboard() {
       mockup={true}
     >
       <div className="flex flex-col gap-6 w-full">
-        <div className="stats stats-vertical lg:stats-horizontal shadow bg-base-100">
-          <div className="stat">
-            <div className="stat-figure text-primary">
-              <FontAwesomeIcon icon={faUsers} size="2x" />
-            </div>
-            <div className="stat-title">Total Users</div>
-            <div className="stat-value text-primary">
-              {formatNumber(dashboardData?.totalCustomers || 0)}
-            </div>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <FontAwesomeIcon icon={faUsers} size="2x" className="text-primary" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Users</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {formatNumber(dashboardData?.totalCustomers || 0)}
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
 
-          <div className="stat">
-            <div className="stat-figure text-secondary">
-              <FontAwesomeIcon icon={faChartLine} size="2x" />
-            </div>
-            <div className="stat-title">Total Revenue</div>
-            <div className="stat-value text-secondary">
-              ${formatNumber(dashboardData?.totalRevenue || 0)}
-            </div>
-          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <FontAwesomeIcon icon={faChartLine} size="2x" className="text-primary" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Revenue</p>
+                  <p className="text-2xl font-bold text-primary">
+                    ${formatNumber(dashboardData?.totalRevenue || 0)}
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
 
-          <div className="stat">
-            <div className="stat-figure text-accent">
-              <FontAwesomeIcon icon={faCreditCard} size="2x" />
-            </div>
-            <div className="stat-title">Active Subscriptions</div>
-            <div className="stat-value text-accent">
-              {formatNumber(dashboardData?.activeSubscriptions || 0)}
-            </div>
-          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <FontAwesomeIcon icon={faCreditCard} size="2x" className="text-primary" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Active Subscriptions</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {formatNumber(dashboardData?.activeSubscriptions || 0)}
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="card bg-base-100 shadow-xl flex-1">
-            <div className="card-body">
-              <h2 className="card-title">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <FontAwesomeIcon icon={faChartBar} className="text-primary" />
                 Key Metrics
-              </h2>
-              <ul className="list-none space-y-2">
+              </CardTitle>
+              <ul className="space-y-2">
                 <li>
                   <span className="font-semibold">MRR:</span> $
                   {formatNumber(dashboardData?.mrr || 0)}
@@ -214,139 +228,132 @@ export default function AdminDashboard() {
                   ).toFixed(2)}
                 </li>
               </ul>
-            </div>
-          </div>
+            </CardHeader>
+          </Card>
 
-          <div className="card bg-base-100 shadow-xl flex-1">
-            <div className="card-body">
-              <h2 className="card-title">
-                <FontAwesomeIcon icon={faCog} className="text-secondary" />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faCog} className="text-primary" />
                 Quick Actions
-              </h2>
+              </CardTitle>
               <div className="flex flex-wrap gap-2">
-                <button
-                  className="btn btn-sm btn-primary"
-                  onClick={handleAddCustomer}
-                >
-                  <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
+                <Button onClick={handleAddCustomer}>
+                  <FontAwesomeIcon icon={faUserPlus} />
                   Add Customer
-                </button>
-                <button
-                  className="btn btn-sm btn-secondary"
-                  onClick={handleGenerateInvoice}
-                >
-                  <FontAwesomeIcon
-                    icon={faFileInvoiceDollar}
-                    className="mr-2"
-                  />
+                </Button>
+                <Button variant="secondary" onClick={handleGenerateInvoice}>
+                  <FontAwesomeIcon icon={faFileInvoiceDollar} />
                   Generate Invoice
-                </button>
+                </Button>
               </div>
-            </div>
-          </div>
+            </CardHeader>
+          </Card>
         </div>
       </div>
 
       <dialog
         id="invoice_modal"
-        className={`modal ${isInvoiceModalOpen ? "modal-open" : ""}`}
+        className={`fixed inset-0 z-50 bg-background/80 backdrop-blur-sm ${
+          isInvoiceModalOpen ? "flex" : "hidden"
+        } items-center justify-center`}
       >
-        <div className="modal-box">
-          <h3 className="font-bold text-lg mb-4">Generate Invoice</h3>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Select Customer</span>
-            </label>
-            <select
-              value={selectedCustomerId || ""}
-              onChange={(e) => setSelectedCustomerId(e.target.value)}
-              className="select select-bordered w-full"
-            >
-              <option value="">Select a customer</option>
-              {customers?.customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.email}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-control w-full mt-4">
-            <label className="label">
-              <span className="label-text">Invoice Amount (USD)</span>
-            </label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) =>
-                setAmount(e.target.value === "" ? "" : Number(e.target.value))
-              }
-              placeholder="Enter amount"
-              className="input input-bordered w-full"
-            />
-          </div>
-          <div className="form-control w-full mt-4">
-            <label className="label">
-              <span className="label-text">Due Date</span>
-            </label>
-            <input
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              className="input input-bordered w-full"
-            />
-          </div>
-          <div className="modal-action mt-6">
-            <button
-              className="btn btn-primary"
-              onClick={generateInvoice}
-              disabled={isGeneratingInvoice}
-            >
-              {isGeneratingInvoice ? "Generating..." : "Generate Invoice"}
-            </button>
-            <button
-              className="btn"
-              onClick={() => setIsInvoiceModalOpen(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle>Generate Invoice</CardTitle>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select Customer</label>
+                <select
+                  value={selectedCustomerId || ""}
+                  onChange={(e) => setSelectedCustomerId(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  <option value="">Select a customer</option>
+                  {customers?.customers.map((customer) => (
+                    <option key={customer.id} value={customer.id}>
+                      {customer.email}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Invoice Amount (USD)</label>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) =>
+                    setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                  }
+                  placeholder="Enter amount"
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Due Date</label>
+                <input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  onClick={generateInvoice}
+                  disabled={isGeneratingInvoice}
+                >
+                  {isGeneratingInvoice ? "Generating..." : "Generate Invoice"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsInvoiceModalOpen(false)}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
       </dialog>
 
       <dialog
         id="add_customer_modal"
-        className={`modal ${isAddCustomerModalOpen ? "modal-open" : ""}`}
+        className={`fixed inset-0 z-50 bg-background/80 backdrop-blur-sm ${
+          isAddCustomerModalOpen ? "flex" : "hidden"
+        } items-center justify-center`}
       >
-        <div className="modal-box">
-          <h3 className="font-bold text-lg mb-4">Add New Customer</h3>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Customer Email</span>
-            </label>
-            <input
-              type="email"
-              value={newCustomerEmail}
-              onChange={(e) => setNewCustomerEmail(e.target.value)}
-              placeholder="Enter customer email"
-              className="input input-bordered w-full"
-            />
-          </div>
-          <div className="modal-action mt-6">
-            <button
-              className="btn btn-primary"
-              onClick={addCustomer}
-              disabled={isAddingCustomer}
-            >
-              {isAddingCustomer ? "Adding..." : "Add Customer"}
-            </button>
-            <button
-              className="btn"
-              onClick={() => setIsAddCustomerModalOpen(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle>Add New Customer</CardTitle>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Customer Email</label>
+                <input
+                  type="email"
+                  value={newCustomerEmail}
+                  onChange={(e) => setNewCustomerEmail(e.target.value)}
+                  placeholder="Enter customer email"
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  onClick={addCustomer}
+                  disabled={isAddingCustomer}
+                >
+                  {isAddingCustomer ? "Adding..." : "Add Customer"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddCustomerModalOpen(false)}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
       </dialog>
     </Section>
   );

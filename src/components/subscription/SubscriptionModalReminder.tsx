@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/lib/context/AuthContext";
 import { useSubscriptionModal } from "@/lib/context/SubscriptionModalContext";
+import { Button } from "../ui/button";
 
 export default function SubscriptionModalReminder() {
   const { userClaims } = useAuth();
@@ -13,13 +14,14 @@ export default function SubscriptionModalReminder() {
   }
 
   return (
-    <button
-      className="btn btn-secondary btn-sm"
+    <Button
+      variant="secondary"
+      size="sm"
       onClick={() => {
         setShowSubscriptionModal(true);
       }}
     >
-      <span>Upgrade</span>
-    </button>
+      Upgrade
+    </Button>
   );
 }
