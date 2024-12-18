@@ -5,6 +5,12 @@ import signout from "@/lib/firebase/signout";
 import Link from "next/link";
 import SubscriptionModalReminder from "../subscription/SubscriptionModalReminder";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function UserAvatar() {
   const { currentUser, isLoadingAuth } = useAuth();
@@ -16,49 +22,43 @@ export default function UserAvatar() {
 
   if (!currentUser) {
     return (
-      <Link href="login" className="btn btn-accent">
-        <span>Login</span>
+      <Link href="login">
+        <button className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md">
+          Login
+        </button>
       </Link>
     );
   }
 
   return (
-    <div className="relative">
-      <button
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground"
-        aria-haspopup="true"
-      >
-        {currentUser.displayName && <span>{currentUser.displayName[0]}</span>}
-      </button>
-      <div className="absolute right-0 mt-2 w-52 rounded-md border bg-popover p-2 shadow-lg">
-        <div className="mb-4">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground"
+        >
+          {currentUser.displayName && <span>{currentUser.displayName[0]}</span>}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-52" align="end">
+        <div className="mb-4 px-2">
           <SubscriptionModalReminder />
         </div>
-        <nav className="flex flex-col space-y-1">
-          <Link 
-            href="/app/dashboard"
-            className="rounded-sm px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/app/settings" 
-            className="rounded-sm px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
-          >
-            Settings
-          </Link>
-          <button
-            onClick={() =>
-              signout(async () => {
-                router.push("/login");
-              })
-            }
-            className="text-left rounded-sm px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
-          >
-            Logout
-          </button>
-        </nav>
-      </div>
-    </div>
+        <DropdownMenuItem asChild>
+          <Link href="/app/dashboard">Dashboard</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/settings">Settings</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            signout(async () => {
+              router.push("/login");
+            })
+          }
+        >
+          Logout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
