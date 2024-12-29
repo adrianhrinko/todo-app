@@ -33,6 +33,7 @@ export async function POST(req: Request) {
       auto_advance: false,
       collection_method: "send_invoice",
       days_until_due: daysUntilDue,
+      currency: "usd",
     });
 
     // Add an invoice item to the draft invoice
