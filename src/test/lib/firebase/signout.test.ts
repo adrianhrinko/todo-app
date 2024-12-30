@@ -1,19 +1,20 @@
-import signout from "@/lib/firebase/signout";
-import { Auth, signOut } from "firebase/auth";
+/* eslint-disable @typescript-eslint/no-require-imports */
+import signout from '@/lib/firebase/signout';
+import { Auth, signOut } from 'firebase/auth';
 
 // Mock the entire firebase/auth module
-jest.mock("firebase/auth", () => ({
+jest.mock('firebase/auth', () => ({
   getAuth: jest.fn(),
   signOut: jest.fn(),
 }));
 
 // Mock the firebaseClient module
-jest.mock("../../../lib/firebase/firebaseClient", () => ({
+jest.mock('../../../lib/firebase/firebaseClient', () => ({
   __esModule: true,
   default: {},
 }));
 
-describe("signout", () => {
+describe('signout', () => {
   let mockAuth: jest.Mocked<Auth>;
 
   beforeEach(() => {
@@ -27,10 +28,10 @@ describe("signout", () => {
     } as unknown as jest.Mocked<Auth>;
 
     // Make getAuth return our mockAuth
-    (require("firebase/auth").getAuth as jest.Mock).mockReturnValue(mockAuth);
+    (require('firebase/auth').getAuth as jest.Mock).mockReturnValue(mockAuth);
   });
 
-  it("should sign out successfully", async () => {
+  it('should sign out successfully', async () => {
     const mockSignOut = signOut as jest.MockedFunction<typeof signOut>;
     mockSignOut.mockResolvedValue();
 
@@ -42,8 +43,8 @@ describe("signout", () => {
     expect(result).toEqual({ success: true, error: null });
   });
 
-  it("should handle sign out error", async () => {
-    const mockError = new Error("Sign out failed");
+  it('should handle sign out error', async () => {
+    const mockError = new Error('Sign out failed');
     const mockSignOut = signOut as jest.MockedFunction<typeof signOut>;
     mockSignOut.mockRejectedValue(mockError);
 
@@ -53,7 +54,7 @@ describe("signout", () => {
     expect(result).toEqual({ success: false, error: mockError });
   });
 
-  it("should execute cleanup callback", async () => {
+  it('should execute cleanup callback', async () => {
     const mockSignOut = signOut as jest.MockedFunction<typeof signOut>;
     mockSignOut.mockResolvedValue();
 
@@ -63,15 +64,15 @@ describe("signout", () => {
     expect(mockCleanup).toHaveBeenCalled();
   });
 
-  it("should handle non-Error objects", async () => {
+  it('should handle non-Error objects', async () => {
     const mockSignOut = signOut as jest.MockedFunction<typeof signOut>;
-    mockSignOut.mockRejectedValue("String error");
+    mockSignOut.mockRejectedValue('String error');
 
     const result = await signout(async () => {}, mockAuth);
 
     expect(result).toEqual({
       success: false,
-      error: new Error("An unknown error occurred during sign out"),
+      error: new Error('An unknown error occurred during sign out'),
     });
   });
 });

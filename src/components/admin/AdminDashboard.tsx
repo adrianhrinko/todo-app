@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   faRocket,
@@ -9,15 +9,14 @@ import {
   faCog,
   faUserPlus,
   faFileInvoiceDollar,
-  faChartPie,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Section from "../shared/Section";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import useSWR from "swr";
-import { Card, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Section from '../shared/Section';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import useSWR from 'swr';
+import { Card, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
 
 interface DashboardData {
   totalCustomers: number;
@@ -33,41 +32,40 @@ export default function AdminDashboard() {
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
-    null
+    null,
   );
-  const [amount, setAmount] = useState<number | "">("");
-  const [dueDate, setDueDate] = useState("");
+  const [amount, setAmount] = useState<number | ''>('');
+  const [dueDate, setDueDate] = useState('');
 
-  const [newCustomerEmail, setNewCustomerEmail] = useState("");
+  const [newCustomerEmail, setNewCustomerEmail] = useState('');
   const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false);
   const [isAddingCustomer, setIsAddingCustomer] = useState(false);
 
   // Fetch stripe dashboard data
-  const {
-    data: dashboardData,
-    error: dashboardError,
-    mutate: mutateDashboard,
-  } = useSWR<DashboardData>("/api/stripe/admin", fetcher);
+  const { data: dashboardData, error: dashboardError } = useSWR<DashboardData>(
+    '/api/stripe/admin',
+    fetcher,
+  );
 
   const {
     data: customers,
     error: customersError,
     mutate: mutateCustomers,
   } = useSWR<{ customers: Array<{ id: string; email: string }> }>(
-    "/api/stripe/customers",
-    fetcher
+    '/api/stripe/customers',
+    fetcher,
   );
 
   if (dashboardError) {
-    toast.error("Failed to fetch dashboard data");
+    toast.error('Failed to fetch dashboard data');
   }
 
   if (customersError) {
-    toast.error("Failed to fetch customers");
+    toast.error('Failed to fetch customers');
   }
 
   const formatNumber = (num: number) => {
-    return new Intl.NumberFormat("en-US", { notation: "compact" }).format(num);
+    return new Intl.NumberFormat('en-US', { notation: 'compact' }).format(num);
   };
 
   const handleGenerateInvoice = () => {
@@ -76,24 +74,24 @@ export default function AdminDashboard() {
 
   const generateInvoice = async () => {
     if (!selectedCustomerId) {
-      toast.error("Please select a customer");
+      toast.error('Please select a customer');
       return;
     }
     if (!amount || amount <= 0) {
-      toast.error("Please enter a valid amount");
+      toast.error('Please enter a valid amount');
       return;
     }
     if (!dueDate) {
-      toast.error("Please select a due date");
+      toast.error('Please select a due date');
       return;
     }
 
     setIsGeneratingInvoice(true);
     try {
-      const response = await fetch("/api/stripe/invoice", {
-        method: "POST",
+      const response = await fetch('/api/stripe/invoice', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           customerId: selectedCustomerId,
@@ -102,16 +100,16 @@ export default function AdminDashboard() {
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to generate invoice");
+        throw new Error('Failed to generate invoice');
       }
       const { invoiceUrl } = await response.json();
-      window.open(invoiceUrl, "_blank");
+      window.open(invoiceUrl, '_blank');
       setIsInvoiceModalOpen(false);
-      setAmount("");
-      setDueDate("");
+      setAmount('');
+      setDueDate('');
     } catch (error) {
-      console.error("Error generating invoice:", error);
-      toast.error("Failed to generate invoice. Please try again.");
+      console.error('Error generating invoice:', error);
+      toast.error('Failed to generate invoice. Please try again.');
     } finally {
       setIsGeneratingInvoice(false);
     }
@@ -123,30 +121,30 @@ export default function AdminDashboard() {
 
   const addCustomer = async () => {
     if (!newCustomerEmail) {
-      toast.error("Please enter a valid email");
+      toast.error('Please enter a valid email');
       return;
     }
 
     setIsAddingCustomer(true);
     try {
-      const response = await fetch("/api/stripe/addCustomer", {
-        method: "POST",
+      const response = await fetch('/api/stripe/addCustomer', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email: newCustomerEmail }),
       });
       if (!response.ok) {
-        throw new Error("Failed to add customer");
+        throw new Error('Failed to add customer');
       }
-      const { customerId } = await response.json();
-      toast.success("Customer added successfully");
+      await response.json();
+      toast.success('Customer added successfully');
       setIsAddCustomerModalOpen(false);
-      setNewCustomerEmail("");
+      setNewCustomerEmail('');
       mutateCustomers();
     } catch (error) {
-      console.error("Error adding customer:", error);
-      toast.error("Failed to add customer. Please try again.");
+      console.error('Error adding customer:', error);
+      toast.error('Failed to add customer. Please try again.');
     } finally {
       setIsAddingCustomer(false);
     }
@@ -154,20 +152,24 @@ export default function AdminDashboard() {
 
   return (
     <Section
-      title="FireSaaS Dashboard"
-      subtitle="Welcome to your all-in-one SaaS management platform!"
+      title='FireSaaS Dashboard'
+      subtitle='Welcome to your all-in-one SaaS management platform!'
       icon={faRocket}
       mockup={true}
     >
-      <div className="flex flex-col gap-6 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className='flex w-full flex-col gap-6'>
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-4">
-                <FontAwesomeIcon icon={faUsers} size="2x" className="text-primary" />
+              <div className='flex items-center gap-4'>
+                <FontAwesomeIcon
+                  icon={faUsers}
+                  size='2x'
+                  className='text-primary'
+                />
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Users</p>
-                  <p className="text-2xl font-bold text-primary">
+                  <p className='text-sm text-muted-foreground'>Total Users</p>
+                  <p className='text-2xl font-bold text-primary'>
                     {formatNumber(dashboardData?.totalCustomers || 0)}
                   </p>
                 </div>
@@ -177,11 +179,15 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-4">
-                <FontAwesomeIcon icon={faChartLine} size="2x" className="text-primary" />
+              <div className='flex items-center gap-4'>
+                <FontAwesomeIcon
+                  icon={faChartLine}
+                  size='2x'
+                  className='text-primary'
+                />
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Revenue</p>
-                  <p className="text-2xl font-bold text-primary">
+                  <p className='text-sm text-muted-foreground'>Total Revenue</p>
+                  <p className='text-2xl font-bold text-primary'>
                     ${formatNumber(dashboardData?.totalRevenue || 0)}
                   </p>
                 </div>
@@ -191,11 +197,17 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-4">
-                <FontAwesomeIcon icon={faCreditCard} size="2x" className="text-primary" />
+              <div className='flex items-center gap-4'>
+                <FontAwesomeIcon
+                  icon={faCreditCard}
+                  size='2x'
+                  className='text-primary'
+                />
                 <div>
-                  <p className="text-sm text-muted-foreground">Active Subscriptions</p>
-                  <p className="text-2xl font-bold text-primary">
+                  <p className='text-sm text-muted-foreground'>
+                    Active Subscriptions
+                  </p>
+                  <p className='text-2xl font-bold text-primary'>
                     {formatNumber(dashboardData?.activeSubscriptions || 0)}
                   </p>
                 </div>
@@ -204,24 +216,24 @@ export default function AdminDashboard() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FontAwesomeIcon icon={faChartBar} className="text-primary" />
+              <CardTitle className='flex items-center gap-2'>
+                <FontAwesomeIcon icon={faChartBar} className='text-primary' />
                 Key Metrics
               </CardTitle>
-              <ul className="space-y-2">
+              <ul className='space-y-2'>
                 <li>
-                  <span className="font-semibold">MRR:</span> $
+                  <span className='font-semibold'>MRR:</span> $
                   {formatNumber(dashboardData?.mrr || 0)}
                 </li>
                 <li>
-                  <span className="font-semibold">Churn Rate:</span>{" "}
+                  <span className='font-semibold'>Churn Rate:</span>{' '}
                   {formatNumber(dashboardData?.churnRate || 0)}%
                 </li>
                 <li>
-                  <span className="font-semibold">ARPU:</span> $
+                  <span className='font-semibold'>ARPU:</span> $
                   {(
                     (dashboardData?.mrr || 0) /
                     (dashboardData?.activeSubscriptions || 1)
@@ -233,16 +245,16 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FontAwesomeIcon icon={faCog} className="text-primary" />
+              <CardTitle className='flex items-center gap-2'>
+                <FontAwesomeIcon icon={faCog} className='text-primary' />
                 Quick Actions
               </CardTitle>
-              <div className="flex flex-wrap gap-2">
+              <div className='flex flex-wrap gap-2'>
                 <Button onClick={handleAddCustomer}>
                   <FontAwesomeIcon icon={faUserPlus} />
                   Add Customer
                 </Button>
-                <Button variant="secondary" onClick={handleGenerateInvoice}>
+                <Button variant='secondary' onClick={handleGenerateInvoice}>
                   <FontAwesomeIcon icon={faFileInvoiceDollar} />
                   Generate Invoice
                 </Button>
@@ -253,23 +265,23 @@ export default function AdminDashboard() {
       </div>
 
       <dialog
-        id="invoice_modal"
+        id='invoice_modal'
         className={`fixed inset-0 z-50 bg-background/80 backdrop-blur-sm ${
-          isInvoiceModalOpen ? "flex" : "hidden"
+          isInvoiceModalOpen ? 'flex' : 'hidden'
         } items-center justify-center`}
       >
-        <Card className="max-w-md w-full">
+        <Card className='w-full max-w-md'>
           <CardHeader>
             <CardTitle>Generate Invoice</CardTitle>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Select Customer</label>
+            <div className='space-y-4'>
+              <div className='space-y-2'>
+                <label className='text-sm font-medium'>Select Customer</label>
                 <select
-                  value={selectedCustomerId || ""}
+                  value={selectedCustomerId || ''}
                   onChange={(e) => setSelectedCustomerId(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className='w-full rounded-md border px-3 py-2'
                 >
-                  <option value="">Select a customer</option>
+                  <option value=''>Select a customer</option>
                   {customers?.customers.map((customer) => (
                     <option key={customer.id} value={customer.id}>
                       {customer.email}
@@ -277,36 +289,40 @@ export default function AdminDashboard() {
                   ))}
                 </select>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Invoice Amount (USD)</label>
+              <div className='space-y-2'>
+                <label className='text-sm font-medium'>
+                  Invoice Amount (USD)
+                </label>
                 <input
-                  type="number"
+                  type='number'
                   value={amount}
                   onChange={(e) =>
-                    setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                    setAmount(
+                      e.target.value === '' ? '' : Number(e.target.value),
+                    )
                   }
-                  placeholder="Enter amount"
-                  className="w-full px-3 py-2 border rounded-md"
+                  placeholder='Enter amount'
+                  className='w-full rounded-md border px-3 py-2'
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Due Date</label>
+              <div className='space-y-2'>
+                <label className='text-sm font-medium'>Due Date</label>
                 <input
-                  type="date"
+                  type='date'
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className='w-full rounded-md border px-3 py-2'
                 />
               </div>
-              <div className="flex justify-end gap-2">
+              <div className='flex justify-end gap-2'>
                 <Button
                   onClick={generateInvoice}
                   disabled={isGeneratingInvoice}
                 >
-                  {isGeneratingInvoice ? "Generating..." : "Generate Invoice"}
+                  {isGeneratingInvoice ? 'Generating...' : 'Generate Invoice'}
                 </Button>
                 <Button
-                  variant="outline"
+                  variant='outline'
                   onClick={() => setIsInvoiceModalOpen(false)}
                 >
                   Close
@@ -318,34 +334,31 @@ export default function AdminDashboard() {
       </dialog>
 
       <dialog
-        id="add_customer_modal"
+        id='add_customer_modal'
         className={`fixed inset-0 z-50 bg-background/80 backdrop-blur-sm ${
-          isAddCustomerModalOpen ? "flex" : "hidden"
+          isAddCustomerModalOpen ? 'flex' : 'hidden'
         } items-center justify-center`}
       >
-        <Card className="max-w-md w-full">
+        <Card className='w-full max-w-md'>
           <CardHeader>
             <CardTitle>Add New Customer</CardTitle>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Customer Email</label>
+            <div className='space-y-4'>
+              <div className='space-y-2'>
+                <label className='text-sm font-medium'>Customer Email</label>
                 <input
-                  type="email"
+                  type='email'
                   value={newCustomerEmail}
                   onChange={(e) => setNewCustomerEmail(e.target.value)}
-                  placeholder="Enter customer email"
-                  className="w-full px-3 py-2 border rounded-md"
+                  placeholder='Enter customer email'
+                  className='w-full rounded-md border px-3 py-2'
                 />
               </div>
-              <div className="flex justify-end gap-2">
-                <Button
-                  onClick={addCustomer}
-                  disabled={isAddingCustomer}
-                >
-                  {isAddingCustomer ? "Adding..." : "Add Customer"}
+              <div className='flex justify-end gap-2'>
+                <Button onClick={addCustomer} disabled={isAddingCustomer}>
+                  {isAddingCustomer ? 'Adding...' : 'Add Customer'}
                 </Button>
                 <Button
-                  variant="outline"
+                  variant='outline'
                   onClick={() => setIsAddCustomerModalOpen(false)}
                 >
                   Close

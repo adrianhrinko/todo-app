@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { StripeProductData } from "@/lib/stripe/types/StripeProductData";
-import SubscriptionCard from "./SubscriptionCard";
+import { StripeProductData } from '@/lib/stripe/types/StripeProductData';
+import SubscriptionCard from './SubscriptionCard';
 
 export default function SubscriptionCardContainer({
   products,
@@ -10,11 +10,15 @@ export default function SubscriptionCardContainer({
 }) {
   return (
     <>
-    {products.map((product: StripeProductData) => {
-      return <SubscriptionCard key={product.id} product={product} />;
-    })}
+      {products.map((product: StripeProductData) => {
+        return (
+          <SubscriptionCard
+            data-testid={`subscription-card-${product.name.toLocaleLowerCase()}`}
+            key={product.id}
+            product={product}
+          />
+        );
+      })}
     </>
   );
-
-
 }

@@ -1,27 +1,27 @@
-import { initializeAdmin } from "@/lib/firebase/firebaseAdmin";
-import { getStripeServerSide } from "@/lib/stripe/getStripeServerSide";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { initializeAdmin } from '@/lib/firebase/firebaseAdmin';
+import { getStripeServerSide } from '@/lib/stripe/getStripeServerSide';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 const admin = initializeAdmin();
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeSecretKey) {
     return NextResponse.json(
-      { error: "Stripe secret key not found" },
+      { error: 'Stripe secret key not found' },
       { status: 500 },
     );
   }
 
   const cookieStore = await cookies();
-  const uid = cookieStore.get("uid")?.value;
+  const uid = cookieStore.get('uid')?.value;
   if (!uid)
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
   const customerId = await admin
     .firestore()
-    .collection("users")
+    .collection('users')
     .doc(uid)
     .get()
     .then((doc) => doc.data()?.stripeId);
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
   if (!stripe) {
     return NextResponse.json(
-      { error: "Stripe is not initialized" },
+      { error: 'Stripe is not initialized' },
       { status: 500 },
     );
   }

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import SubscriptionCardContainer from "./SubscriptionCardContainer";
-import { StripeProductData } from "@/lib/stripe/types/StripeProductData";
-import { useSubscriptionModal } from "@/lib/context/SubscriptionModalContext";
+import { useEffect, useRef, useState } from 'react';
+import SubscriptionCardContainer from './SubscriptionCardContainer';
+import { StripeProductData } from '@/lib/stripe/types/StripeProductData';
+import { useSubscriptionModal } from '@/lib/context/SubscriptionModalContext';
 import {
   Dialog,
   DialogContent,
@@ -11,8 +11,8 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 export default function SubscriptionModal({
   products,
@@ -22,11 +22,11 @@ export default function SubscriptionModal({
   const modalRef = useRef<HTMLDialogElement>(null);
   const { showSubscriptionModal, setShowSubscriptionModal } =
     useSubscriptionModal();
-  const [showPricing, setShowPricing] = useState("");
+  const [showPricing, setShowPricing] = useState('');
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      let pricing = localStorage.getItem("showPricing");
+    if (typeof window !== 'undefined') {
+      const pricing = localStorage.getItem('showPricing');
       if (!pricing) return;
 
       setShowPricing(pricing);
@@ -34,12 +34,12 @@ export default function SubscriptionModal({
   }, []);
 
   useEffect(() => {
-    if (showPricing === "true") {
+    if (showPricing === 'true') {
       setShowSubscriptionModal(true);
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("showPricing", "false");
-        setShowPricing("false");
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('showPricing', 'false');
+        setShowPricing('false');
       }
     }
   }, [showPricing]);
@@ -56,16 +56,19 @@ export default function SubscriptionModal({
         open={showSubscriptionModal}
         onOpenChange={(open) => setShowSubscriptionModal(open)}
       >
-        <DialogContent className="sm:max-w-5xl">
+        <DialogContent className='sm:max-w-5xl'>
           <DialogHeader>
-            <DialogTitle className="text-center">Upgrade Now</DialogTitle>
+            <DialogTitle className='text-center'>Upgrade Now</DialogTitle>
           </DialogHeader>
-          
+
           <SubscriptionCardContainer products={products} />
-          
+
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" onClick={() => setShowSubscriptionModal(false)}>
+              <Button
+                variant='outline'
+                onClick={() => setShowSubscriptionModal(false)}
+              >
                 Close
               </Button>
             </DialogClose>

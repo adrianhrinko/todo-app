@@ -1,21 +1,23 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/lib/context/AuthContext";
-import React, { useEffect, useRef, useState } from "react";
+import { useAuth } from '@/lib/context/AuthContext';
+import React, { useEffect, useRef, useState } from 'react';
+
+type StripePricingTableElement = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLElement> & {
+    'pricing-table-id': string;
+    'publishable-key': string;
+    'client-reference-id': string;
+    'customer-session-client-secret': string;
+  },
+  HTMLElement
+>;
 
 declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'stripe-pricing-table': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          'pricing-table-id': string;
-          'publishable-key': string;
-          'client-reference-id': string;
-          'customer-session-client-secret': string;
-        },
-        HTMLElement
-      >;
-    }
+  interface JSX {
+    IntrinsicElements: {
+      'stripe-pricing-table': StripePricingTableElement;
+    };
   }
 }
 
@@ -35,14 +37,14 @@ const StripePricingTable: React.FC<StripePricingTableProps> = ({
 
   const getCustomerSessionClientSecret = async () => {
     try {
-      const response = await fetch("/api/stripe/customerSession");
+      const response = await fetch('/api/stripe/customerSession');
       if (!response.ok) {
-        throw new Error("Failed to fetch customer session");
+        throw new Error('Failed to fetch customer session');
       }
       const data = await response.json();
       setCustomerSessionClientSecret(data.clientSecret);
     } catch (error) {
-      console.error("Error fetching customer session:", error);
+      console.error('Error fetching customer session:', error);
     }
   };
 
@@ -52,8 +54,8 @@ const StripePricingTable: React.FC<StripePricingTableProps> = ({
 
   useEffect(() => {
     if (!scriptRef.current) {
-      const script = document.createElement("script");
-      script.src = "https://js.stripe.com/v3/pricing-table.js";
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/pricing-table.js';
       script.async = true;
       document.body.appendChild(script);
       scriptRef.current = script;
@@ -72,17 +74,17 @@ const StripePricingTable: React.FC<StripePricingTableProps> = ({
   }
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       <div
         dangerouslySetInnerHTML={{
           __html: `
             <stripe-pricing-table
               pricing-table-id="${pricingTableId}"
               publishable-key="${publishableKey}"
-              client-reference-id="${currentUser?.uid ?? ""}"
+              client-reference-id="${currentUser?.uid ?? ''}"
               customer-session-client-secret="${customerSessionClientSecret}"
             ></stripe-pricing-table>
-          `
+          `,
         }}
       />
     </div>

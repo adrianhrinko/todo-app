@@ -1,32 +1,32 @@
-import { initializeAdmin } from "@/lib/firebase/firebaseAdmin";
-import { getStripeServerSide } from "@/lib/stripe/getStripeServerSide";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { initializeAdmin } from '@/lib/firebase/firebaseAdmin';
+import { getStripeServerSide } from '@/lib/stripe/getStripeServerSide';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 const admin = initializeAdmin();
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const cookieStore = await cookies();
-    const uid = cookieStore.get("uid")?.value;
+    const uid = cookieStore.get('uid')?.value;
     if (!uid)
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     const stripe = await getStripeServerSide();
     if (!stripe)
-      return NextResponse.json({ error: "Stripe not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Stripe not found' }, { status: 404 });
 
     const customer_id = await admin
       .firestore()
-      .collection("users")
+      .collection('users')
       .doc(uid)
       .get()
       .then((doc) => doc.data()?.stripeId);
 
     if (!customer_id)
       return NextResponse.json(
-        { error: "Customer not found" },
-        { status: 404 }
+        { error: 'Customer not found' },
+        { status: 404 },
       );
 
     const session = await stripe.billingPortal.sessions.create({
