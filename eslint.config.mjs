@@ -32,12 +32,7 @@ export default [...compat.extends("next/core-web-vitals"), {
                 jsx: true,
             },
         },
-    },
-
-    rules: {
-        "tailwindcss/classnames-order": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-    },
+    }
 }, ...compat.extends(
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
@@ -50,6 +45,7 @@ export default [...compat.extends("next/core-web-vitals"), {
     files: ["**/*.ts", "**/*.tsx"],
 
     rules: {
+        "tailwindcss/classnames-order": "off",
         "@typescript-eslint/no-explicit-any": "off",
     },
 }];

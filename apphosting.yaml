@@ -29,9 +29,9 @@ env:
   - variable: NEXT_PUBLIC_MIXPANEL_TOKEN
     secret: mixpanelToken
   - variable: NEXT_PUBLIC_FIREBASE_FUNCTIONS_BASE_URL
-    secret: "https://europe-central2-todo-app-2abf7.cloudfunctions.net"
+    value: "https://europe-central2-todo-app-2abf7.cloudfunctions.net"
   - variable: NEXT_PUBLIC_SITE_URL
-    secret: "todo-app--todo-app-2abf7.europe-west4.hosted.app"
+    value: "todo-app--todo-app-2abf7.europe-west4.hosted.app"
   - variable: CONTENTFUL_SPACE_ID
     value: ""
   - variable: CONTENTFUL_ACCESS_TOKEN
