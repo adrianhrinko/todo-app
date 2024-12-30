@@ -32,11 +32,5 @@ env:
     value: "https://europe-central2-todo-app-2abf7.cloudfunctions.net"
   - variable: NEXT_PUBLIC_SITE_URL
     value: "todo-app--todo-app-2abf7.europe-west4.hosted.app"
-  - variable: CONTENTFUL_SPACE_ID
-    value: ""
-  - variable: CONTENTFUL_ACCESS_TOKEN
-    value: ""
-  - variable: CONTENTFUL_REVALIDATE_SECRET
-    value: ""
   - variable: NEXT_PUBLIC_ENABLE_BLOG
     value: false
